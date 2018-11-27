@@ -50,10 +50,6 @@ class InstagramApi:
         self.session.headers.update({'x-csrftoken' : login_response.cookies['csrftoken']})
         self.cookies = login_response.cookies
 
-    def get_user_id(self, username):
-        user_data = self.session.get('{}{}/?__a=1'.format(INSTAGRAM_URL, username)).content
-        return json.loads(user_data)['graphql']['user']['id']
-
     def update_ig_gis_header(self, params):
         self.session.headers.update({
             'x-instagram-gis': self.get_ig_gis(
@@ -65,9 +61,13 @@ class InstagramApi:
     def get_ig_gis(self, rhx_gis, params):
         return hashlib.md5(rhx_gis + ":" + params).hexdigest()
 
-    def get_user_posts_by_username(self, username):
-        user_id = self.get_user_id(username)
-        self.get_user_posts_by_id(user_id)
+    def get_user_id(self, username):
+        ''' Basic API calling
+            username = username of target instagram user
+            return data will be the ID of the target user
+        '''
+        user_data = self.session.get('{}{}/?__a=1'.format(INSTAGRAM_URL, username)).content
+        return json.loads(user_data)['graphql']['user']['id']
 
     def get_user_posts_by_id(self, user_id, from_post = '', count = 12):
         ''' Basic API calling, which defaultly called,
@@ -81,10 +81,17 @@ class InstagramApi:
         return self.session.get(QUERY_MEDIA_URL.format(params)).content
 
     def get_post_data_by_shortcode(self, shortcode):
-        ''' Basic API calling '''
+        ''' Basic API calling
+            shortcode = shortcode of the targeted post
+            return data will be all available information from the post
+        '''
         params = POST_MEDIA_VARS.format(shortcode)
         self.update_ig_gis_header(params)
         return self.session.get(POST_MEDIA_URL.format(params)).content
+
+    def get_user_posts_by_username(self, username):
+        user_id = self.get_user_id(username)
+        self.get_user_posts_by_id(user_id)
 
     def get_user_some_posts_by_id(self, user_id, count):
         posts = []
@@ -95,11 +102,10 @@ class InstagramApi:
         else:
             while count != 0 and has_next_page is True:
                 data = self.get_user_posts_by_id(user_id, 50)
+                #TODO: implement it
                 #has_next_page = data[....] To be continued
 
         return data 
-
-        
 
     def get_user_all_posts_by_id(self, user_id):
         after = ''
