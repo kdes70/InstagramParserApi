@@ -80,6 +80,12 @@ class InstagramApi:
         self.update_ig_gis_header(params)
         return self.session.get(QUERY_MEDIA_URL.format(params)).content
 
+    def get_post_data_by_shortcode(self, shortcode):
+        ''' Basic API calling '''
+        params = POST_MEDIA_VARS.format(shortcode)
+        self.update_ig_gis_header(params)
+        return self.session.get(POST_MEDIA_URL.format(params)).content
+
     def get_user_some_posts_by_id(self, user_id, count):
         posts = []
         has_next_page = True
@@ -92,6 +98,8 @@ class InstagramApi:
                 #has_next_page = data[....] To be continued
 
         return data 
+
+        
 
     def get_user_all_posts_by_id(self, user_id):
         after = ''

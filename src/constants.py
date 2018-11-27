@@ -8,3 +8,6 @@ USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Ge
 
 QUERY_MEDIA_VARS = '{{"id":"{0}","first":"{1}","after":"{2}"}}'
 QUERY_MEDIA_URL  = INSTAGRAM_URL + 'graphql/query/?query_hash=42323d64886122307be10013ad2dcc44&variables={0}'
+
+POST_MEDIA_VARS = '{{"shortcode":"{0}","child_comment_count":0,"fetch_comment_count":0,"parent_comment_count":0,"has_threaded_comments":false}}'
+POST_MEDIA_URL = INSTAGRAM_URL + 'graphql/query/?query_hash=49699cdb479dd5664863d4b647ada1f7&variables={0}'
