@@ -88,39 +88,3 @@ class InstagramApi:
         params = POST_MEDIA_VARS.format(shortcode)
         self.update_ig_gis_header(params)
         return self.session.get(POST_MEDIA_URL.format(params)).content
-
-    def get_user_posts_by_username(self, username):
-        user_id = self.get_user_id(username)
-        self.get_user_posts_by_id(user_id)
-
-    def get_user_some_posts_by_id(self, user_id, count):
-        posts = []
-        has_next_page = True
-
-        if count <= 50:
-            data = self.get_user_posts_by_id(user_id, '', count)
-        else:
-            while count != 0 and has_next_page is True:
-                data = self.get_user_posts_by_id(user_id, 50)
-                #TODO: implement it
-                #has_next_page = data[....] To be continued
-
-        return data 
-
-    def get_user_all_posts_by_id(self, user_id):
-        after = ''
-        has_next_page = True
-        data = []
-
-        while (has_next_page == True):
-            #self.get_user_posts_by_id(
-
-
-            has_next_page = json_data['data']['user']['edge_owner_to_timeline_media']['page_info']['has_next_page']
-            after = json_data['data']['user']['edge_owner_to_timeline_media']['page_info']['end_cursor']
-
-            data.append(['data']['user']['edge_owner_to_timeline_media']['edges'])
-
-            time.sleep(1)
-
-        return data
