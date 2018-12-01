@@ -4,8 +4,21 @@ import json
 
 
 class InstagramApiWrapper:
+    '''Preferably used, as self.api give interface to basic api'''
     def __init__(self, username, password):
         self.api = InstagramApi(username, password)
+
+    def get_user_posts_with_location(self, username, count):
+        data = dict()
+
+        user_id = self.api.get_user_id(username)
+        posts = json.loads(self.api.get_user_posts_by_id(user_id))["data"]["user"]["edge_owner_to_timeline_media"]["edges"]
+        for post in posts:
+            data["post"] = self.get_post_data_by_keys(post["node"]["shortcode"], ['location'])
+
+
+        print data
+
 
     def get_post_data_by_keys(self, shortcode, array_keys):
         ''' Wrapped api calling for getting post's data by desirable keys
@@ -21,8 +34,9 @@ class InstagramApiWrapper:
         post_data = json.loads(post_data)
         for key in array_keys:
             method_to_call = getattr(post_data_helper, 'get_post_{}'.format(key))
-            found_data[key] = method_to_call(post_data)
-
+            location = method_to_call(post_data)
+            if location != '':
+                found_data[key] = method_to_call(post_data)
 
         return found_data
 
