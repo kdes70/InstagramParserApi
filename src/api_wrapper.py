@@ -25,7 +25,10 @@ class InstagramApiWrapper:
             Current implementation is hacky #TODO fix it.
             Currently supported keys: 
                             * location
-
+                            * url
+                            * author_username
+                            * author_full_name
+                            * text
             return: dictionary with selected keys, and found values
         '''
         found_data = dict()
