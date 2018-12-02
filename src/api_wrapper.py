@@ -19,7 +19,6 @@ class InstagramApiWrapper:
 
         print data
 
-
     def get_post_data_by_keys(self, shortcode, array_keys):
         ''' Wrapped api calling for getting post's data by desirable keys
             Current implementation is hacky #TODO fix it.
@@ -37,9 +36,7 @@ class InstagramApiWrapper:
         post_data = json.loads(post_data)
         for key in array_keys:
             method_to_call = getattr(post_data_helper, 'get_post_{}'.format(key))
-            location = method_to_call(post_data)
-            if location != '':
-                found_data[key] = method_to_call(post_data)
+            found_data[key] = method_to_call(post_data)
 
         return found_data
 
