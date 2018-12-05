@@ -59,20 +59,26 @@ class InstagramApiWrapper:
 
         return data 
 
-    def get_user_all_posts_by_id(self, user_id):
+    def get_user_all_posts_by_id(self, user_id, time_out = 2, just_edges = True):
+        ''' Same behaviour as you scrolling down the user page
+            With edges flag you could define if you just want the ['edges'] 
+            to be scraped, to not contain the whole response data to be more useful
+        '''
+
         after = ''
         has_next_page = True
         data = []
 
         while (has_next_page == True):
-            json_data = self.api.get_user_posts_by_id(user_id, after, 50)
-            json_data = json.loads(json_data)
-
+            json_data = json.loads(self.api.get_user_posts_by_id(user_id, after, 50))
             has_next_page = json_data['data']['user']['edge_owner_to_timeline_media']['page_info']['has_next_page']
             after = json_data['data']['user']['edge_owner_to_timeline_media']['page_info']['end_cursor']
 
-            data.append(json_data['data']['user']['edge_owner_to_timeline_media']['edges'])
+            if just_edges = True:
+                data.append(json_data['data']['user']['edge_owner_to_timeline_media']['edges'])
+            else:
+                data.append(json_data)
 
-            time.sleep(2)
+            time.sleep(time_out)
 
         return data
