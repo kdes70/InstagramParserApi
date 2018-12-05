@@ -1,12 +1,13 @@
 from api import InstagramApi 
+import time
 import post_data_helper 
 import json
 
 
 class InstagramApiWrapper:
     '''Preferably used, as self.api give interface to basic api'''
-    def __init__(self, username, password):
-        self.api = InstagramApi(username, password)
+    def __init__(self, username, password, login = True):
+        self.api = InstagramApi(username, password, login)
 
     def get_user_posts_with_location(self, username, count):
         data = dict()
@@ -64,14 +65,14 @@ class InstagramApiWrapper:
         data = []
 
         while (has_next_page == True):
-            #self.get_user_posts_by_id(
-
+            json_data = self.api.get_user_posts_by_id(user_id, after, 50)
+            json_data = json.loads(json_data)
 
             has_next_page = json_data['data']['user']['edge_owner_to_timeline_media']['page_info']['has_next_page']
             after = json_data['data']['user']['edge_owner_to_timeline_media']['page_info']['end_cursor']
 
-            data.append(['data']['user']['edge_owner_to_timeline_media']['edges'])
+            data.append(json_data['data']['user']['edge_owner_to_timeline_media']['edges'])
 
-            time.sleep(1)
+            time.sleep(2)
 
         return data

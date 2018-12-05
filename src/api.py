@@ -8,9 +8,13 @@ import json
 
 
 class InstagramApi:
-    def __init__(self, username, password):
+    def __init__(self, username, password, login = True):
         self.session = requests.Session()
-        self.login(username, password)
+        if login == True:
+            self.login(username, password)
+        else:
+            '''Required to obtain GIS'''
+            self.set_headers()
 
     def set_headers(self):
         content = self.session.get(INSTAGRAM_URL).content
@@ -49,6 +53,7 @@ class InstagramApi:
 
         self.session.headers.update({'x-csrftoken' : login_response.cookies['csrftoken']})
         self.cookies = login_response.cookies
+        print "Logged in as: {}".format(username)
 
     def update_ig_gis_header(self, params):
         self.session.headers.update({
