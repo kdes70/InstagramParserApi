@@ -59,6 +59,10 @@ class InstagramApiWrapper:
 
         return data 
 
+
+    
+    def get_user_all_posts_by_id_with_store(self, user_id, time_out, just_edges = True, store = 'default'):
+
     def get_user_all_posts_by_id(self, user_id, time_out = 2, just_edges = True):
         ''' Same behaviour as you scrolling down the user page
             With edges flag you could define if you just want the ['edges'] 
@@ -71,10 +75,15 @@ class InstagramApiWrapper:
 
         while (has_next_page == True):
             json_data = json.loads(self.api.get_user_posts_by_id(user_id, after, 50))
-            has_next_page = json_data['data']['user']['edge_owner_to_timeline_media']['page_info']['has_next_page']
+            try:
+                has_next_page = json_data['data']['user']['edge_owner_to_timeline_media']['page_info']['has_next_page']
+            except:
+                print 'API Limit error'
+                break
+
             after = json_data['data']['user']['edge_owner_to_timeline_media']['page_info']['end_cursor']
 
-            if just_edges = True:
+            if just_edges == True:
                 data.append(json_data['data']['user']['edge_owner_to_timeline_media']['edges'])
             else:
                 data.append(json_data)
