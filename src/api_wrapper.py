@@ -1,4 +1,5 @@
 from api import InstagramApi 
+from api_limit_handler import ApiLimitHandler 
 import time
 import post_data_helper 
 import json
@@ -59,17 +60,29 @@ class InstagramApiWrapper:
 
         return data 
 
-
-    
     def get_user_all_posts_by_id_with_store(self, user_id, time_out, just_edges = True, store = 'default'):
+        ''' Current way of working: 0 <- parsed, x <- non parsed
+            xxxxxxxxx0000000000000000000xx
+            |        |                 ||
+            start   stop              stop start if not last
 
-    def get_user_all_posts_by_id(self, user_id, time_out = 2, just_edges = True):
+            To be symmetric, ApiLimitHandler won't parse the incoming and outcoming data (pointers)
+
+        '''
+        user_data = ApiLimitHandler.load_state(user_id)
+        if user_data is None:
+            parsed_data = self.get_user_all_posts_by_id(self, user_id, time_out, False)
+            ApiLimitHandler.save_current_pointer(parsed_data)
+
+            if just_edges == True:
+                pass
+
+
+    def get_user_all_posts_by_id(self, user_id, time_out = 2, just_edges = True, after = '', stop_on = ''):
         ''' Same behaviour as you scrolling down the user page
             With edges flag you could define if you just want the ['edges'] 
             to be scraped, to not contain the whole response data to be more useful
         '''
-
-        after = ''
         has_next_page = True
         data = []
 
@@ -86,7 +99,7 @@ class InstagramApiWrapper:
             if just_edges == True:
                 data.append(json_data['data']['user']['edge_owner_to_timeline_media']['edges'])
             else:
-                data.append(json_data)
+                data.append(json_data['data']['user']['edge_owner_to_timeline_media'])
 
             time.sleep(time_out)
 

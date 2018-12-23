@@ -19,12 +19,26 @@ class ApiLimitHandler:
     DATA_FILE = '{}/data'.format(os.getcwd()) 
 
     @staticmethod
-    def save_current_pointer(json_object):
+    def __save_current_pointer(json_object):
+        '''General method of saving '''
         self.__load_data()
 
     @staticmethod
+    def load_user_state(user_id):
+        data = self.__load_data()
+        if data['users'].get(user_id):
+            return data['users'][user_id]
+
+        return None
+
+    @staticmethod
+    def save_user_state(user_json):
+        self.__save_current_pointer(prepared_json_data)
+
+
+    @staticmethod
     def __load_data():
-        if !os.path.exists(DATA_FILE):
+        if os.path.exists(DATA_FILE) is not True:
             os.mkdir(os.path.dirname(os.path.abspath(DATA_FILE)))
             with open(DATA_FILE, 'w+'): pass
         with open(DATA_FILE, 'r') as data:
